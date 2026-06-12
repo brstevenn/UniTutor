@@ -189,12 +189,279 @@ const TUTORS = [
   { id: 3, name: "Marcos Herrera", email: "marcos@tutor.com", specialty: "Física",       rating: 4.6, reviews: 18 },
 ];
 
-const SUBJECTS = [
-  "Cálculo I", "Álgebra Lineal", "Programación Orientada a Objetos",
-  "Física General", "Estructuras de Datos", "Bases de Datos",
-];
+/* SUBJECTS and DAYS are now in I18N.es.subjects / I18N.en.subjects, etc.
+   ES_SUBJECTS and ES_DAYS are the canonical keys used in session data. */
 
-const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+/* ================================================================
+   I18N
+================================================================ */
+
+let lang = localStorage.getItem("ut_lang") || "es";
+
+const I18N = {
+  es: {
+    /* login */
+    tagline:          "Tu plataforma de tutorías universitarias",
+    emailLabel:       "Correo electrónico",
+    emailPlaceholder: "correo@universidad.edu",
+    passwordLabel:    "Contraseña",
+    loginBtn:         "Iniciar sesión",
+    verifying:        "Verificando…",
+    loginError:       "Correo o contraseña incorrectos.",
+    demoStudent:      "Estudiante:",
+    demoTutor:        "Tutor:",
+    /* nav */
+    navSearch:        "Buscar Tutorías",
+    navMyBookings:    "Mis Tutorías",
+    navProfile:       "Perfil",
+    navManage:        "Gestionar",
+    roleStudent:      "Estudiante",
+    roleTutor:        "Tutor",
+    logout:           "Cerrar sesión",
+    /* search */
+    searchTitle:      "Buscar Tutorías",
+    searchSub:        n => `${n} tutorías en la plataforma`,
+    statSessions:     "Tutorías",
+    statTutors:       "Tutores",
+    statSubjects:     "Materias",
+    statMyBookings:   "Mis reservas",
+    searchPlaceholder:"Buscar materia, tutor…",
+    filterSubject:    "Materia",
+    filterDay:        "Día",
+    filterModality:   "Modalidad",
+    inPerson:         "Presencial",
+    online:           "Online",
+    noResults:        "No se encontraron tutorías",
+    noResultsSub:     "Prueba con otros filtros o términos.",
+    clearFilters:     "Limpiar filtros",
+    viewDetail:       "Ver detalle",
+    book:             "Reservar",
+    noSpots:          "Sin cupos",
+    alreadyBooked:    "Reservada",
+    videoCall:        "Videollamada",
+    /* my bookings */
+    myBookingsTitle:  "Mis Tutorías",
+    myBookingsSub:    n => `${n} reserva(s) en total`,
+    statTotal:        "Total",
+    statActive:       "Activas",
+    statCancelled:    "Canceladas",
+    statCompleted:    "Completadas",
+    colSession:       "Tutoría",
+    colDayTime:       "Día / Hora",
+    colModality:      "Modalidad",
+    colStatus:        "Estado",
+    colBooked:        "Reservada",
+    colAction:        "Acción",
+    statusBooked:     "Reservada",
+    statusCancelled:  "Cancelada",
+    statusCompleted:  "Completada",
+    cancel:           "Cancelar",
+    emptyBookings:    "No tienes tutorías reservadas",
+    emptyBookingsSub: "¡Explora las tutorías disponibles y reserva la tuya!",
+    searchSessions:   "Buscar tutorías",
+    /* profile */
+    profileTitle:     "Mi Perfil",
+    profileSub:       "Información de tu cuenta",
+    accountInfo:      "Información de cuenta",
+    fieldName:        "Nombre",
+    fieldEmail:       "Correo",
+    fieldRole:        "Rol",
+    fieldId:          "ID",
+    fieldBookings:    "Reservas",
+    fieldActive:      "Activas",
+    tutorStats:       "Estadísticas como tutor",
+    statCreated:      "Tutorías creadas",
+    statSpecialty:    "Especialidad",
+    statRating:       "Valoración",
+    reviews:          "reseñas",
+    variousSubjects:  "Varias materias",
+    /* manage */
+    manageTitle:      "Gestionar Tutorías",
+    manageSub:        n => `${n} tutoría(s) creadas`,
+    newSession:       "Nueva tutoría",
+    colSubject:       "Materia",
+    colSpots:         "Cupos",
+    colActions:       "Acciones",
+    emptyManage:      "No tienes tutorías creadas aún",
+    /* modals */
+    modalCreate:      "Nueva Tutoría",
+    modalEdit:        "Editar Tutoría",
+    modalDelete:      "Confirmar eliminación",
+    deleteQuestion:   "¿Eliminar la tutoría de",
+    deleteWarning:    "Esta acción no se puede deshacer.",
+    delete:           "Eliminar",
+    saveChanges:      "Guardar cambios",
+    createSession:    "Crear tutoría",
+    fldSubject:       "Materia",
+    fldDay:           "Día",
+    fldTime:          "Hora",
+    fldModality:      "Modalidad",
+    fldSpots:         "Cupos",
+    fldLocation:      "Lugar / Link",
+    fldDuration:      "Duración",
+    fldDesc:          "Descripción",
+    fldReqs:          "Requisitos",
+    selectPlaceholder:"Selecciona…",
+    detailDayTime:    "Día y hora",
+    detailDuration:   "Duración",
+    detailSpots:      "Cupos",
+    detailDesc:       "Descripción",
+    detailReqs:       "Requisitos",
+    alreadyBookedBtn: "Ya reservada",
+    bookSession:      "Reservar tutoría",
+    /* toasts */
+    toastNoSpots:     "No hay cupos disponibles.",
+    toastAlreadyBkd:  "Ya tienes esta tutoría reservada.",
+    toastBooked:      s => `¡Tutoría de <strong>${s}</strong> reservada!`,
+    toastCancelled:   "Reserva cancelada.",
+    toastCreated:     s => `Tutoría de <strong>${s}</strong> creada.`,
+    toastUpdated:     "Tutoría actualizada.",
+    toastDeleted:     "Tutoría eliminada.",
+    /* data */
+    subjects: ["Cálculo I","Álgebra Lineal","Programación Orientada a Objetos","Física General","Estructuras de Datos","Bases de Datos"],
+    days:     ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],
+  },
+  en: {
+    /* login */
+    tagline:          "Your university tutoring platform",
+    emailLabel:       "Email address",
+    emailPlaceholder: "email@university.edu",
+    passwordLabel:    "Password",
+    loginBtn:         "Sign in",
+    verifying:        "Verifying…",
+    loginError:       "Incorrect email or password.",
+    demoStudent:      "Student:",
+    demoTutor:        "Tutor:",
+    /* nav */
+    navSearch:        "Search Sessions",
+    navMyBookings:    "My Sessions",
+    navProfile:       "Profile",
+    navManage:        "Manage",
+    roleStudent:      "Student",
+    roleTutor:        "Tutor",
+    logout:           "Sign out",
+    /* search */
+    searchTitle:      "Search Sessions",
+    searchSub:        n => `${n} sessions on the platform`,
+    statSessions:     "Sessions",
+    statTutors:       "Tutors",
+    statSubjects:     "Subjects",
+    statMyBookings:   "My bookings",
+    searchPlaceholder:"Search subject, tutor…",
+    filterSubject:    "Subject",
+    filterDay:        "Day",
+    filterModality:   "Modality",
+    inPerson:         "In-person",
+    online:           "Online",
+    noResults:        "No sessions found",
+    noResultsSub:     "Try different filters or terms.",
+    clearFilters:     "Clear filters",
+    viewDetail:       "View details",
+    book:             "Book",
+    noSpots:          "No spots",
+    alreadyBooked:    "Booked",
+    videoCall:        "Video call",
+    /* my bookings */
+    myBookingsTitle:  "My Sessions",
+    myBookingsSub:    n => `${n} booking(s) total`,
+    statTotal:        "Total",
+    statActive:       "Active",
+    statCancelled:    "Cancelled",
+    statCompleted:    "Completed",
+    colSession:       "Session",
+    colDayTime:       "Day / Time",
+    colModality:      "Modality",
+    colStatus:        "Status",
+    colBooked:        "Booked on",
+    colAction:        "Action",
+    statusBooked:     "Booked",
+    statusCancelled:  "Cancelled",
+    statusCompleted:  "Completed",
+    cancel:           "Cancel",
+    emptyBookings:    "You have no booked sessions",
+    emptyBookingsSub: "Explore available sessions and book yours!",
+    searchSessions:   "Search sessions",
+    /* profile */
+    profileTitle:     "My Profile",
+    profileSub:       "Your account information",
+    accountInfo:      "Account information",
+    fieldName:        "Name",
+    fieldEmail:       "Email",
+    fieldRole:        "Role",
+    fieldId:          "ID",
+    fieldBookings:    "Bookings",
+    fieldActive:      "Active",
+    tutorStats:       "Tutor statistics",
+    statCreated:      "Created sessions",
+    statSpecialty:    "Specialty",
+    statRating:       "Rating",
+    reviews:          "reviews",
+    variousSubjects:  "Various subjects",
+    /* manage */
+    manageTitle:      "Manage Sessions",
+    manageSub:        n => `${n} session(s) created`,
+    newSession:       "New session",
+    colSubject:       "Subject",
+    colSpots:         "Spots",
+    colActions:       "Actions",
+    emptyManage:      "No sessions created yet",
+    /* modals */
+    modalCreate:      "New Session",
+    modalEdit:        "Edit Session",
+    modalDelete:      "Confirm deletion",
+    deleteQuestion:   "Delete session",
+    deleteWarning:    "This action cannot be undone.",
+    delete:           "Delete",
+    saveChanges:      "Save changes",
+    createSession:    "Create session",
+    fldSubject:       "Subject",
+    fldDay:           "Day",
+    fldTime:          "Time",
+    fldModality:      "Modality",
+    fldSpots:         "Spots",
+    fldLocation:      "Place / Link",
+    fldDuration:      "Duration",
+    fldDesc:          "Description",
+    fldReqs:          "Requirements",
+    selectPlaceholder:"Select…",
+    detailDayTime:    "Date & time",
+    detailDuration:   "Duration",
+    detailSpots:      "Spots",
+    detailDesc:       "Description",
+    detailReqs:       "Requirements",
+    alreadyBookedBtn: "Already booked",
+    bookSession:      "Book session",
+    /* toasts */
+    toastNoSpots:     "No spots available.",
+    toastAlreadyBkd:  "You already have this session booked.",
+    toastBooked:      s => `Session <strong>${s}</strong> booked!`,
+    toastCancelled:   "Booking cancelled.",
+    toastCreated:     s => `Session <strong>${s}</strong> created.`,
+    toastUpdated:     "Session updated.",
+    toastDeleted:     "Session deleted.",
+    /* data */
+    subjects: ["Calculus I","Linear Algebra","Object-Oriented Programming","General Physics","Data Structures","Databases"],
+    days:     ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+  },
+};
+
+function t(key, arg) {
+  const v = I18N[lang][key];
+  if (v === undefined) return key;
+  return typeof v === "function" ? v(arg) : v;
+}
+
+/* Map Spanish day/subject names → current language for display */
+const ES_DAYS     = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const ES_SUBJECTS = ["Cálculo I","Álgebra Lineal","Programación Orientada a Objetos","Física General","Estructuras de Datos","Bases de Datos"];
+function tDay(d)  { const i = ES_DAYS.indexOf(d);     return i >= 0 ? I18N[lang].days[i]     : d; }
+function tSubj(s) { const i = ES_SUBJECTS.indexOf(s); return i >= 0 ? I18N[lang].subjects[i] : s; }
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem("ut_lang", l);
+  render();
+}
 
 /* ================================================================
    STATE  (mutable)
@@ -373,9 +640,9 @@ function restoreSession() {
 function bookSession(sessionId) {
   const sess = state.sessions.find(s => s.id === sessionId);
   if (!sess) return;
-  if (sess.spots <= 0) { showToast("No hay cupos disponibles.", "warning"); return; }
+  if (sess.spots <= 0) { showToast(t("toastNoSpots"), "warning"); return; }
   const already = state.bookings.find(b => b.sessionId === sessionId && b.status !== "Cancelada");
-  if (already) { showToast("Ya tienes esta tutoría reservada.", "warning"); return; }
+  if (already) { showToast(t("toastAlreadyBkd"), "warning"); return; }
 
   api(550).then(() => {
     sess.spots--;
@@ -391,7 +658,7 @@ function bookSession(sessionId) {
       status:    "Reservada",
       bookedAt:  new Date().toLocaleDateString("es-ES"),
     });
-    showToast(`¡Tutoría de <strong>${sess.subject}</strong> reservada!`, "success");
+    showToast(t("toastBooked", tSubj(sess.subject)), "success");
     closeModals();
     renderDashboard();
   });
@@ -405,7 +672,7 @@ function cancelBooking(bookingId) {
     bk.status = "Cancelada";
     const sess = state.sessions.find(s => s.id === bk.sessionId);
     if (sess) sess.spots++;
-    showToast("Reserva cancelada.", "warning");
+    showToast(t("toastCancelled"), "warning");
     renderDashboard();
   });
 }
@@ -427,7 +694,7 @@ function createSession(data) {
       requirements: data.requirements || "",
       duration:     data.duration || "90 minutos",
     });
-    showToast(`Tutoría de <strong>${data.subject}</strong> creada.`, "success");
+    showToast(t("toastCreated", tSubj(data.subject)), "success");
     renderDashboard();
   });
 }
@@ -448,7 +715,7 @@ function updateSession(id, data) {
       requirements: data.requirements || sess.requirements,
       duration:     data.duration || sess.duration,
     });
-    showToast("Tutoría actualizada.", "info");
+    showToast(t("toastUpdated"), "info");
     state.editSessionId = null;
     renderDashboard();
   });
@@ -459,7 +726,7 @@ function deleteSession(id) {
   api(350).then(() => {
     state.sessions = state.sessions.filter(s => s.id !== id);
     state.bookings = state.bookings.filter(b => b.sessionId !== id);
-    showToast("Tutoría eliminada.", "danger");
+    showToast(t("toastDeleted"), "danger");
     renderDashboard();
   });
 }
@@ -495,23 +762,36 @@ function render() {
 function buildLogin() {
   return `
   <div class="login-bg">
-    <div class="login-card fade-in">
+    <div class="login-card fade-in" style="position:relative">
+
+      <!-- Language toggle -->
+      <div style="position:absolute;top:1rem;right:1rem">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Language">
+          <button type="button"
+            class="btn ${lang === 'es' ? 'btn-primary' : 'btn-outline-secondary'} fw-semibold"
+            onclick="setLang('es')" style="min-width:2.5rem">ES</button>
+          <button type="button"
+            class="btn ${lang === 'en' ? 'btn-primary' : 'btn-outline-secondary'} fw-semibold"
+            onclick="setLang('en')" style="min-width:2.5rem">EN</button>
+        </div>
+      </div>
+
       <div class="text-center mb-4">
         <div class="brand-logo mb-1"><i class="bi bi-mortarboard-fill me-1"></i>UniTutor</div>
-        <p class="text-muted small mb-0">Tu plataforma de tutorías universitarias</p>
+        <p class="text-muted small mb-0">${t("tagline")}</p>
       </div>
 
       <form id="loginForm" novalidate>
         <div class="mb-3">
-          <label class="form-label fw-semibold small">Correo electrónico</label>
+          <label class="form-label fw-semibold small">${t("emailLabel")}</label>
           <div class="input-group">
             <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
-            <input id="loginEmail"    type="email"    class="form-control border-start-0"
-              placeholder="correo@universidad.edu" value="student@test.com" required />
+            <input id="loginEmail" type="email" class="form-control border-start-0"
+              placeholder="${t("emailPlaceholder")}" value="student@test.com" required />
           </div>
         </div>
         <div class="mb-4">
-          <label class="form-label fw-semibold small">Contraseña</label>
+          <label class="form-label fw-semibold small">${t("passwordLabel")}</label>
           <div class="input-group">
             <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
             <input id="loginPassword" type="password" class="form-control border-start-0 border-end-0"
@@ -523,20 +803,20 @@ function buildLogin() {
         </div>
 
         <div id="loginErr" class="alert alert-danger py-2 d-none small">
-          <i class="bi bi-exclamation-circle me-1"></i>Correo o contraseña incorrectos.
+          <i class="bi bi-exclamation-circle me-1"></i>${t("loginError")}
         </div>
 
         <button type="submit" class="btn w-100 text-white fw-semibold py-2"
           style="background:var(--grad);border-radius:.6rem">
-          <span id="loginBtnTxt">Iniciar sesión</span>
+          <span id="loginBtnTxt">${t("loginBtn")}</span>
           <span id="loginSpinner" class="spinner-border spinner-border-sm ms-2 d-none"></span>
         </button>
       </form>
 
       <hr class="my-4" />
       <div class="text-center text-muted small">
-        <p class="mb-1"><i class="bi bi-person me-1"></i><strong>Estudiante:</strong> student@test.com / 1234</p>
-        <p class="mb-0"><i class="bi bi-mortarboard me-1"></i><strong>Tutor:</strong> tutor@test.com / 1234</p>
+        <p class="mb-1"><i class="bi bi-person me-1"></i><strong>${t("demoStudent")}</strong> student@test.com / 1234</p>
+        <p class="mb-0"><i class="bi bi-mortarboard me-1"></i><strong>${t("demoTutor")}</strong> tutor@test.com / 1234</p>
       </div>
     </div>
   </div>`;
@@ -561,7 +841,7 @@ function attachLoginHandlers() {
     const btnTxt   = document.getElementById("loginBtnTxt");
 
     spinner.classList.remove("d-none");
-    btnTxt.textContent = "Verificando…";
+    btnTxt.textContent = t("verifying");
     errDiv.classList.add("d-none");
 
     api(800).then(() => {
@@ -571,7 +851,7 @@ function attachLoginHandlers() {
         navigate_view("dashboard");
       } else {
         spinner.classList.add("d-none");
-        btnTxt.textContent = "Iniciar sesión";
+        btnTxt.textContent = t("loginBtn");
         errDiv.classList.remove("d-none");
       }
     });
@@ -587,10 +867,10 @@ function buildDashboard() {
   const isT = u.role === "tutor";
 
   const navItems = [
-    { id: "search",     icon: "bi-search",         label: "Buscar Tutorías" },
-    { id: "mybookings", icon: "bi-calendar-check",  label: "Mis Tutorías"   },
-    { id: "profile",    icon: "bi-person-circle",   label: "Perfil"         },
-    ...(isT ? [{ id: "manage", icon: "bi-gear", label: "Gestionar" }] : []),
+    { id: "search",     icon: "bi-search",         label: t("navSearch")     },
+    { id: "mybookings", icon: "bi-calendar-check",  label: t("navMyBookings") },
+    { id: "profile",    icon: "bi-person-circle",   label: t("navProfile")    },
+    ...(isT ? [{ id: "manage", icon: "bi-gear", label: t("navManage") }] : []),
   ].map(it => `
     <li class="nav-item">
       <a href="#" class="nav-link ${state.section === it.id ? "active" : ""}"
@@ -616,9 +896,9 @@ function buildDashboard() {
         <span class="badge bg-white text-dark px-3 py-2 rounded-pill shadow-sm">
           <i class="bi bi-person-fill me-1 text-primary"></i>${u.name}
           <span class="badge ms-1 rounded-pill ${isT ? "bg-warning text-dark" : "bg-primary"}"
-                style="font-size:.6rem">${isT ? "Tutor" : "Estudiante"}</span>
+                style="font-size:.6rem">${isT ? t("roleTutor") : t("roleStudent")}</span>
         </span>
-        <button class="btn btn-light btn-sm shadow-sm" onclick="logout()" title="Cerrar sesión">
+        <button class="btn btn-light btn-sm shadow-sm" onclick="logout()" title="${t("logout")}">
           <i class="bi bi-box-arrow-right"></i>
         </button>
       </div>
@@ -680,20 +960,20 @@ function attachDashboardHandlers() {
 function buildSearch() {
   const filtered = filteredSessions();
 
-  const subjectOpts = SUBJECTS.map(s =>
-    `<option value="${s}" ${state.filterSubject === s ? "selected" : ""}>${s}</option>`).join("");
-  const dayOpts = DAYS.map(d =>
-    `<option value="${d}" ${state.filterDay === d ? "selected" : ""}>${d}</option>`).join("");
+  const subjectOpts = ES_SUBJECTS.map((s, i) =>
+    `<option value="${s}" ${state.filterSubject === s ? "selected" : ""}>${I18N[lang].subjects[i]}</option>`).join("");
+  const dayOpts = ES_DAYS.map((d, i) =>
+    `<option value="${d}" ${state.filterDay === d ? "selected" : ""}>${I18N[lang].days[i]}</option>`).join("");
 
   const cards = filtered.length
     ? filtered.map(buildSessionCard).join("")
     : `<div class="col-12">
          <div class="empty-state bg-white rounded-3 shadow-sm">
            <i class="bi bi-search"></i>
-           <h5>No se encontraron tutorías</h5>
-           <p class="small">Prueba con otros filtros o términos.</p>
+           <h5>${t("noResults")}</h5>
+           <p class="small">${t("noResultsSub")}</p>
            <button class="btn btn-outline-primary btn-sm" onclick="clearFilters()">
-             <i class="bi bi-x-circle me-1"></i>Limpiar filtros
+             <i class="bi bi-x-circle me-1"></i>${t("clearFilters")}
            </button>
          </div>
        </div>`;
@@ -702,16 +982,16 @@ function buildSearch() {
 
   return `
   <div class="mb-4">
-    <h4 class="fw-bold mb-0"><i class="bi bi-search me-2 text-primary"></i>Buscar Tutorías</h4>
-    <p class="text-muted small">${state.sessions.length} tutorías en la plataforma</p>
+    <h4 class="fw-bold mb-0"><i class="bi bi-search me-2 text-primary"></i>${t("searchTitle")}</h4>
+    <p class="text-muted small">${t("searchSub", state.sessions.length)}</p>
   </div>
 
   <!-- Stats -->
   <div class="row g-3 mb-4">
-    ${statCard("#EEF2FF","text-primary","bi-book-fill",state.sessions.length,"Tutorías")}
-    ${statCard("#F0FDF4","text-success","bi-people-fill",TUTORS.length,"Tutores")}
-    ${statCard("#FFF7ED","","bi-grid-fill",SUBJECTS.length,"Materias","#F97316")}
-    ${statCard("#FFF1F2","text-danger","bi-calendar-check-fill",activeBookings,"Mis reservas")}
+    ${statCard("#EEF2FF","text-primary","bi-book-fill",state.sessions.length,t("statSessions"))}
+    ${statCard("#F0FDF4","text-success","bi-people-fill",TUTORS.length,t("statTutors"))}
+    ${statCard("#FFF7ED","","bi-grid-fill",ES_SUBJECTS.length,t("statSubjects"),"#F97316")}
+    ${statCard("#FFF1F2","text-danger","bi-calendar-check-fill",activeBookings,t("statMyBookings"))}
   </div>
 
   <!-- Filters -->
@@ -722,29 +1002,29 @@ function buildSearch() {
           <div class="input-group">
             <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
             <input id="searchInput" type="text" class="form-control search-input"
-              placeholder="Buscar materia, tutor…" value="${state.searchQuery}"
+              placeholder="${t("searchPlaceholder")}" value="${state.searchQuery}"
               oninput="handleSearch(this.value)" />
           </div>
         </div>
         <div class="col-4 col-md-2">
           <select class="form-select" onchange="handleFilter('subject',this.value)">
-            <option value="">Materia</option>${subjectOpts}
+            <option value="">${t("filterSubject")}</option>${subjectOpts}
           </select>
         </div>
         <div class="col-4 col-md-2">
           <select class="form-select" onchange="handleFilter('day',this.value)">
-            <option value="">Día</option>${dayOpts}
+            <option value="">${t("filterDay")}</option>${dayOpts}
           </select>
         </div>
         <div class="col-4 col-md-2">
           <select class="form-select" onchange="handleFilter('modality',this.value)">
-            <option value="">Modalidad</option>
-            <option value="Presencial" ${state.filterModality==="Presencial"?"selected":""}>Presencial</option>
-            <option value="Online"     ${state.filterModality==="Online"?"selected":""}>Online</option>
+            <option value="">${t("filterModality")}</option>
+            <option value="Presencial" ${state.filterModality==="Presencial"?"selected":""}>${t("inPerson")}</option>
+            <option value="Online"     ${state.filterModality==="Online"?"selected":""}>${t("online")}</option>
           </select>
         </div>
         <div class="col-12 col-md-1">
-          <button class="btn btn-outline-secondary w-100" onclick="clearFilters()" title="Limpiar">
+          <button class="btn btn-outline-secondary w-100" onclick="clearFilters()" title="${t("clearFilters")}">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -780,13 +1060,13 @@ function buildSessionCard(sess) {
   const modBadge  = modalityBadge(sess.modality);
 
   const actionBtn = isBooked
-    ? `<button class="btn btn-success btn-sm" disabled><i class="bi bi-check2 me-1"></i>Reservada</button>`
+    ? `<button class="btn btn-success btn-sm" disabled><i class="bi bi-check2 me-1"></i>${t("alreadyBooked")}</button>`
     : sess.spots > 0
       ? `<button class="btn btn-primary btn-sm flex-grow-1" onclick="bookSession(${sess.id})">
-           <i class="bi bi-bookmark-plus me-1"></i>Reservar
+           <i class="bi bi-bookmark-plus me-1"></i>${t("book")}
          </button>`
       : `<button class="btn btn-secondary btn-sm" disabled>
-           <i class="bi bi-x-circle me-1"></i>Sin cupos
+           <i class="bi bi-x-circle me-1"></i>${t("noSpots")}
          </button>`;
 
   return `
@@ -802,7 +1082,7 @@ function buildSessionCard(sess) {
       <div class="card-body pb-2">
         <div class="d-flex flex-wrap gap-1 mb-3">
           <span class="badge bg-light text-dark border">
-            <i class="bi bi-calendar3 me-1"></i>${sess.day}
+            <i class="bi bi-calendar3 me-1"></i>${tDay(sess.day)}
           </span>
           <span class="badge bg-light text-dark border">
             <i class="bi bi-clock me-1"></i>${sess.time}
@@ -810,7 +1090,7 @@ function buildSessionCard(sess) {
         </div>
         <div class="d-flex align-items-center justify-content-between">
           <small class="text-muted text-truncate me-2">
-            <i class="bi bi-geo-alt me-1"></i>${sess.modality === "Presencial" ? sess.location : "Videollamada"}
+            <i class="bi bi-geo-alt me-1"></i>${sess.modality === "Presencial" ? sess.location : t("videoCall")}
           </small>
           <span class="badge bg-${spotsClr}-subtle text-${spotsClr} border border-${spotsClr}-subtle text-nowrap">
             <i class="bi bi-people me-1"></i>${sess.spots}/${sess.totalSpots}
@@ -821,7 +1101,7 @@ function buildSessionCard(sess) {
         <div class="d-flex gap-2">
           <button class="btn btn-outline-primary btn-sm flex-grow-1"
                   onclick="openDetail(${sess.id})">
-            <i class="bi bi-eye me-1"></i>Ver detalle
+            <i class="bi bi-eye me-1"></i>${t("viewDetail")}
           </button>
           ${actionBtn}
         </div>
@@ -832,8 +1112,8 @@ function buildSessionCard(sess) {
 
 function modalityBadge(modality) {
   return modality === "Presencial"
-    ? `<span class="badge badge-presencial text-nowrap"><i class="bi bi-geo-alt me-1"></i>Presencial</span>`
-    : `<span class="badge badge-online text-nowrap"><i class="bi bi-wifi me-1"></i>Online</span>`;
+    ? `<span class="badge badge-presencial text-nowrap"><i class="bi bi-geo-alt me-1"></i>${t("inPerson")}</span>`
+    : `<span class="badge badge-online text-nowrap"><i class="bi bi-wifi me-1"></i>${t("online")}</span>`;
 }
 
 /* Filter helpers */
@@ -869,9 +1149,9 @@ function refreshGrid() {
     : `<div class="col-12">
          <div class="empty-state bg-white rounded-3 shadow-sm">
            <i class="bi bi-search"></i>
-           <h5>No se encontraron tutorías</h5>
+           <h5>${t("noResults")}</h5>
            <button class="btn btn-outline-primary btn-sm mt-1" onclick="clearFilters()">
-             <i class="bi bi-x-circle me-1"></i>Limpiar filtros
+             <i class="bi bi-x-circle me-1"></i>${t("clearFilters")}
            </button>
          </div>
        </div>`;
@@ -906,27 +1186,27 @@ function openDetail(id) {
       </div>
       <div class="col-6">
         <div class="bg-light rounded-3 p-3 h-100">
-          <div class="text-muted small mb-1 fw-semibold">Día y hora</div>
-          <div><i class="bi bi-calendar3 me-1 text-primary"></i>${sess.day}</div>
+          <div class="text-muted small mb-1 fw-semibold">${t("detailDayTime")}</div>
+          <div><i class="bi bi-calendar3 me-1 text-primary"></i>${tDay(sess.day)}</div>
           <div><i class="bi bi-clock me-1 text-primary"></i>${sess.time}</div>
         </div>
       </div>
       <div class="col-6">
         <div class="bg-light rounded-3 p-3 h-100">
-          <div class="text-muted small mb-1 fw-semibold">Modalidad</div>
+          <div class="text-muted small mb-1 fw-semibold">${t("colModality")}</div>
           <div class="mb-1">${modalityBadge(sess.modality)}</div>
           <div class="small text-muted">${sess.location}</div>
         </div>
       </div>
       <div class="col-6">
         <div class="bg-light rounded-3 p-3">
-          <div class="text-muted small mb-1 fw-semibold">Duración</div>
+          <div class="text-muted small mb-1 fw-semibold">${t("detailDuration")}</div>
           <div><i class="bi bi-hourglass me-1 text-secondary"></i>${sess.duration}</div>
         </div>
       </div>
       <div class="col-6">
         <div class="bg-light rounded-3 p-3">
-          <div class="text-muted small mb-1 fw-semibold">Cupos</div>
+          <div class="text-muted small mb-1 fw-semibold">${t("detailSpots")}</div>
           <span class="badge bg-${spotsC}-subtle text-${spotsC} border border-${spotsC}-subtle">
             <i class="bi bi-people me-1"></i>${sess.spots} / ${sess.totalSpots}
           </span>
@@ -934,26 +1214,26 @@ function openDetail(id) {
       </div>
       <div class="col-12">
         <div class="rounded-3 p-3" style="background:#F8FAFF">
-          <div class="text-muted small mb-1 fw-semibold">Descripción</div>
+          <div class="text-muted small mb-1 fw-semibold">${t("detailDesc")}</div>
           <p class="mb-0 small">${sess.description}</p>
         </div>
       </div>
       ${sess.requirements ? `
       <div class="col-12">
         <div class="rounded-3 p-3 bg-warning-subtle">
-          <div class="text-muted small mb-1 fw-semibold"><i class="bi bi-exclamation-triangle me-1 text-warning"></i>Requisitos</div>
+          <div class="text-muted small mb-1 fw-semibold"><i class="bi bi-exclamation-triangle me-1 text-warning"></i>${t("detailReqs")}</div>
           <p class="mb-0 small">${sess.requirements}</p>
         </div>
       </div>` : ""}
     </div>`;
 
   document.getElementById("detailFooter").innerHTML = isB
-    ? `<button class="btn btn-success" disabled><i class="bi bi-check2-circle me-1"></i>Ya reservada</button>`
+    ? `<button class="btn btn-success" disabled><i class="bi bi-check2-circle me-1"></i>${t("alreadyBookedBtn")}</button>`
     : sess.spots > 0
       ? `<button class="btn btn-primary" onclick="bookSession(${sess.id})">
-           <i class="bi bi-bookmark-plus me-1"></i>Reservar tutoría
+           <i class="bi bi-bookmark-plus me-1"></i>${t("bookSession")}
          </button>`
-      : `<button class="btn btn-secondary" disabled><i class="bi bi-x-circle me-1"></i>Sin cupos</button>`;
+      : `<button class="btn btn-secondary" disabled><i class="bi bi-x-circle me-1"></i>${t("noSpots")}</button>`;
 
   new bootstrap.Modal(document.getElementById("detailModal")).show();
 }
@@ -967,14 +1247,14 @@ function buildMyBookings() {
   if (!bks.length) {
     return `
     <div class="mb-4">
-      <h4 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>Mis Tutorías</h4>
+      <h4 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>${t("myBookingsTitle")}</h4>
     </div>
     <div class="empty-state bg-white rounded-3 shadow-sm">
       <i class="bi bi-calendar-x"></i>
-      <h5>No tienes tutorías reservadas</h5>
-      <p class="small">¡Explora las tutorías disponibles y reserva la tuya!</p>
+      <h5>${t("emptyBookings")}</h5>
+      <p class="small">${t("emptyBookingsSub")}</p>
       <button class="btn btn-primary btn-sm" onclick="navigate('search')">
-        <i class="bi bi-search me-1"></i>Buscar tutorías
+        <i class="bi bi-search me-1"></i>${t("searchSessions")}
       </button>
     </div>`;
   }
@@ -982,27 +1262,28 @@ function buildMyBookings() {
   const sColors = { Reservada:"primary", Cancelada:"danger", Completada:"success" };
   const sIcons  = { Reservada:"bi-calendar-check", Cancelada:"bi-calendar-x", Completada:"bi-check-circle" };
 
+  const statusKey = { Reservada:"statusBooked", Cancelada:"statusCancelled", Completada:"statusCompleted" };
   const rows = bks.map(b => `
     <tr>
       <td class="ps-3">
-        <div class="fw-semibold">${b.subject}</div>
+        <div class="fw-semibold">${tSubj(b.subject)}</div>
         <div class="text-muted small">${b.tutorName}</div>
       </td>
       <td>
-        <div>${b.day}</div>
+        <div>${tDay(b.day)}</div>
         <div class="text-muted small">${b.time}</div>
       </td>
       <td>${modalityBadge(b.modality)}</td>
       <td>
         <span class="badge bg-${sColors[b.status]}-subtle text-${sColors[b.status]} border border-${sColors[b.status]}-subtle">
-          <i class="bi ${sIcons[b.status]} me-1"></i>${b.status}
+          <i class="bi ${sIcons[b.status]} me-1"></i>${t(statusKey[b.status])}
         </span>
       </td>
       <td class="text-muted small">${b.bookedAt}</td>
       <td>
         ${b.status === "Reservada"
           ? `<button class="btn btn-outline-danger btn-sm" onclick="cancelBooking(${b.id})">
-               <i class="bi bi-x-circle me-1"></i>Cancelar
+               <i class="bi bi-x-circle me-1"></i>${t("cancel")}
              </button>`
           : `<span class="text-muted">—</span>`}
       </td>
@@ -1014,15 +1295,15 @@ function buildMyBookings() {
 
   return `
   <div class="mb-4">
-    <h4 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>Mis Tutorías</h4>
-    <p class="text-muted small">${bks.length} reserva(s) en total</p>
+    <h4 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>${t("myBookingsTitle")}</h4>
+    <p class="text-muted small">${t("myBookingsSub", bks.length)}</p>
   </div>
 
   <div class="row g-3 mb-4">
-    ${statCard("#EEF2FF","text-primary","bi-list-check",bks.length,"Total")}
-    ${statCard("#F0FDF4","text-success","bi-calendar-check-fill",reserved,"Activas")}
-    ${statCard("#FFF1F2","text-danger","bi-calendar-x-fill",cancelled,"Canceladas")}
-    ${statCard("#F0FDF4","text-success","bi-check-circle-fill",completed,"Completadas")}
+    ${statCard("#EEF2FF","text-primary","bi-list-check",bks.length,t("statTotal"))}
+    ${statCard("#F0FDF4","text-success","bi-calendar-check-fill",reserved,t("statActive"))}
+    ${statCard("#FFF1F2","text-danger","bi-calendar-x-fill",cancelled,t("statCancelled"))}
+    ${statCard("#F0FDF4","text-success","bi-check-circle-fill",completed,t("statCompleted"))}
   </div>
 
   <div class="card border-0 shadow-sm">
@@ -1031,12 +1312,12 @@ function buildMyBookings() {
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
-              <th class="ps-3">Tutoría</th>
-              <th>Día / Hora</th>
-              <th>Modalidad</th>
-              <th>Estado</th>
-              <th>Reservada</th>
-              <th>Acción</th>
+              <th class="ps-3">${t("colSession")}</th>
+              <th>${t("colDayTime")}</th>
+              <th>${t("colModality")}</th>
+              <th>${t("colStatus")}</th>
+              <th>${t("colBooked")}</th>
+              <th>${t("colAction")}</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -1060,8 +1341,8 @@ function buildProfile() {
 
   return `
   <div class="mb-4">
-    <h4 class="fw-bold mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>Mi Perfil</h4>
-    <p class="text-muted small">Información de tu cuenta</p>
+    <h4 class="fw-bold mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>${t("profileTitle")}</h4>
+    <p class="text-muted small">${t("profileSub")}</p>
   </div>
 
   <div class="row g-4">
@@ -1073,22 +1354,22 @@ function buildProfile() {
         <p class="text-muted small mb-3">${u.email}</p>
         <span class="badge px-3 py-2 rounded-pill ${isT ? "bg-warning text-dark" : "bg-primary"}">
           <i class="bi ${isT ? "bi-mortarboard" : "bi-person-fill"} me-1"></i>
-          ${isT ? "Tutor" : "Estudiante"}
+          ${isT ? t("roleTutor") : t("roleStudent")}
         </span>
         <hr class="my-3" />
         <div class="row g-2 text-center">
           <div class="col-6">
             <div class="fw-bold fs-4 text-primary">${total}</div>
-            <div class="text-muted small">Reservas</div>
+            <div class="text-muted small">${t("fieldBookings")}</div>
           </div>
           <div class="col-6">
             <div class="fw-bold fs-4 text-success">${active}</div>
-            <div class="text-muted small">Activas</div>
+            <div class="text-muted small">${t("fieldActive")}</div>
           </div>
         </div>
         <hr class="my-3" />
         <button class="btn btn-danger w-100" onclick="logout()">
-          <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+          <i class="bi bi-box-arrow-right me-2"></i>${t("logout")}
         </button>
       </div>
     </div>
@@ -1097,19 +1378,19 @@ function buildProfile() {
     <div class="col-12 col-md-7 d-flex flex-column gap-3">
       <div class="card border-0 shadow-sm">
         <div class="card-header bg-light border-0">
-          <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-primary"></i>Información de cuenta</h6>
+          <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-primary"></i>${t("accountInfo")}</h6>
         </div>
         <div class="card-body">
           <dl class="row mb-0 small">
-            <dt class="col-5 text-muted fw-normal">Nombre</dt>
+            <dt class="col-5 text-muted fw-normal">${t("fieldName")}</dt>
             <dd class="col-7 fw-semibold">${u.name}</dd>
-            <dt class="col-5 text-muted fw-normal">Correo</dt>
+            <dt class="col-5 text-muted fw-normal">${t("fieldEmail")}</dt>
             <dd class="col-7 fw-semibold">${u.email}</dd>
-            <dt class="col-5 text-muted fw-normal">Rol</dt>
+            <dt class="col-5 text-muted fw-normal">${t("fieldRole")}</dt>
             <dd class="col-7">
-              <span class="badge ${isT ? "bg-warning text-dark" : "bg-primary"}">${isT ? "Tutor" : "Estudiante"}</span>
+              <span class="badge ${isT ? "bg-warning text-dark" : "bg-primary"}">${isT ? t("roleTutor") : t("roleStudent")}</span>
             </dd>
-            <dt class="col-5 text-muted fw-normal">ID</dt>
+            <dt class="col-5 text-muted fw-normal">${t("fieldId")}</dt>
             <dd class="col-7 text-muted">#${u.id}</dd>
           </dl>
         </div>
@@ -1118,18 +1399,18 @@ function buildProfile() {
       ${isT ? `
       <div class="card border-0 shadow-sm">
         <div class="card-header bg-light border-0">
-          <h6 class="mb-0 fw-bold"><i class="bi bi-star me-2 text-warning"></i>Estadísticas como tutor</h6>
+          <h6 class="mb-0 fw-bold"><i class="bi bi-star me-2 text-warning"></i>${t("tutorStats")}</h6>
         </div>
         <div class="card-body">
           <dl class="row mb-0 small">
-            <dt class="col-6 text-muted fw-normal">Tutorías creadas</dt>
+            <dt class="col-6 text-muted fw-normal">${t("statCreated")}</dt>
             <dd class="col-6 fw-semibold">${mySess.length}</dd>
-            <dt class="col-6 text-muted fw-normal">Especialidad</dt>
-            <dd class="col-6 fw-semibold">${tutorInfo?.specialty ?? "Varias materias"}</dd>
-            <dt class="col-6 text-muted fw-normal">Valoración</dt>
+            <dt class="col-6 text-muted fw-normal">${t("statSpecialty")}</dt>
+            <dd class="col-6 fw-semibold">${tutorInfo?.specialty ?? t("variousSubjects")}</dd>
+            <dt class="col-6 text-muted fw-normal">${t("statRating")}</dt>
             <dd class="col-6 fw-semibold">
               <i class="bi bi-star-fill text-warning me-1"></i>${tutorInfo?.rating ?? "—"}
-              <span class="text-muted">(${tutorInfo?.reviews ?? 0} reseñas)</span>
+              <span class="text-muted">(${tutorInfo?.reviews ?? 0} ${t("reviews")})</span>
             </dd>
           </dl>
         </div>
@@ -1150,8 +1431,8 @@ function buildManage() {
         const sc = s.spots === 0 ? "danger" : s.spots <= 2 ? "warning" : "success";
         return `
         <tr>
-          <td class="ps-3 fw-semibold">${s.subject}</td>
-          <td>${s.day}<span class="text-muted small ms-1">• ${s.time}</span></td>
+          <td class="ps-3 fw-semibold">${tSubj(s.subject)}</td>
+          <td>${tDay(s.day)}<span class="text-muted small ms-1">• ${s.time}</span></td>
           <td>${modalityBadge(s.modality)}</td>
           <td>
             <span class="badge bg-${sc}-subtle text-${sc} border border-${sc}-subtle">
@@ -1171,17 +1452,17 @@ function buildManage() {
         </tr>`;
       }).join("")
     : `<tr><td colspan="5" class="text-center py-5 text-muted">
-         <i class="bi bi-inbox fs-2 d-block mb-2"></i>No tienes tutorías creadas aún
+         <i class="bi bi-inbox fs-2 d-block mb-2"></i>${t("emptyManage")}
        </td></tr>`;
 
   return `
   <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
     <div>
-      <h4 class="fw-bold mb-0"><i class="bi bi-gear me-2 text-primary"></i>Gestionar Tutorías</h4>
-      <p class="text-muted small">${mySess.length} tutoría(s) creadas</p>
+      <h4 class="fw-bold mb-0"><i class="bi bi-gear me-2 text-primary"></i>${t("manageTitle")}</h4>
+      <p class="text-muted small">${t("manageSub", mySess.length)}</p>
     </div>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-      <i class="bi bi-plus-lg me-1"></i>Nueva tutoría
+      <i class="bi bi-plus-lg me-1"></i>${t("newSession")}
     </button>
   </div>
 
@@ -1191,11 +1472,11 @@ function buildManage() {
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
-              <th class="ps-3">Materia</th>
-              <th>Día / Hora</th>
-              <th>Modalidad</th>
-              <th>Cupos</th>
-              <th>Acciones</th>
+              <th class="ps-3">${t("colSubject")}</th>
+              <th>${t("colDayTime")}</th>
+              <th>${t("colModality")}</th>
+              <th>${t("colSpots")}</th>
+              <th>${t("colActions")}</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -1243,52 +1524,52 @@ function askDelete(id) {
 ================================================================ */
 
 function buildModals() {
-  const subjectOpts = SUBJECTS.map(s => `<option value="${s}">${s}</option>`).join("");
-  const dayOpts     = DAYS.map(d    => `<option value="${d}">${d}</option>`).join("");
+  const subjectOpts = ES_SUBJECTS.map((s, i) => `<option value="${s}">${I18N[lang].subjects[i]}</option>`).join("");
+  const dayOpts     = ES_DAYS.map((d, i)     => `<option value="${d}">${I18N[lang].days[i]}</option>`).join("");
 
   const sessionFields = `
   <div class="row g-3">
     <div class="col-12">
-      <label class="form-label fw-semibold small">Materia <span class="text-danger">*</span></label>
+      <label class="form-label fw-semibold small">${t("fldSubject")} <span class="text-danger">*</span></label>
       <select name="subject" class="form-select" required>
-        <option value="">Selecciona…</option>${subjectOpts}
+        <option value="">${t("selectPlaceholder")}</option>${subjectOpts}
       </select>
     </div>
     <div class="col-6">
-      <label class="form-label fw-semibold small">Día <span class="text-danger">*</span></label>
+      <label class="form-label fw-semibold small">${t("fldDay")} <span class="text-danger">*</span></label>
       <select name="day" class="form-select" required>
-        <option value="">Selecciona…</option>${dayOpts}
+        <option value="">${t("selectPlaceholder")}</option>${dayOpts}
       </select>
     </div>
     <div class="col-6">
-      <label class="form-label fw-semibold small">Hora <span class="text-danger">*</span></label>
+      <label class="form-label fw-semibold small">${t("fldTime")} <span class="text-danger">*</span></label>
       <input name="time" type="text" class="form-control" placeholder="09:00 - 10:30" required />
     </div>
     <div class="col-6">
-      <label class="form-label fw-semibold small">Modalidad <span class="text-danger">*</span></label>
+      <label class="form-label fw-semibold small">${t("fldModality")} <span class="text-danger">*</span></label>
       <select name="modality" class="form-select" required>
-        <option value="Presencial">Presencial</option>
-        <option value="Online">Online</option>
+        <option value="Presencial">${t("inPerson")}</option>
+        <option value="Online">${t("online")}</option>
       </select>
     </div>
     <div class="col-6">
-      <label class="form-label fw-semibold small">Cupos <span class="text-danger">*</span></label>
+      <label class="form-label fw-semibold small">${t("fldSpots")} <span class="text-danger">*</span></label>
       <input name="spots" type="number" class="form-control" min="1" max="30" placeholder="8" required />
     </div>
     <div class="col-12">
-      <label class="form-label fw-semibold small">Lugar / Link <span class="text-danger">*</span></label>
+      <label class="form-label fw-semibold small">${t("fldLocation")} <span class="text-danger">*</span></label>
       <input name="location" type="text" class="form-control" placeholder="Sala A-201 o https://meet.google.com/…" required />
     </div>
     <div class="col-6">
-      <label class="form-label fw-semibold small">Duración</label>
+      <label class="form-label fw-semibold small">${t("fldDuration")}</label>
       <input name="duration" type="text" class="form-control" placeholder="90 minutos" />
     </div>
     <div class="col-12">
-      <label class="form-label fw-semibold small">Descripción</label>
+      <label class="form-label fw-semibold small">${t("fldDesc")}</label>
       <textarea name="description" class="form-control" rows="2" placeholder="Describe el contenido…"></textarea>
     </div>
     <div class="col-12">
-      <label class="form-label fw-semibold small">Requisitos</label>
+      <label class="form-label fw-semibold small">${t("fldReqs")}</label>
       <input name="requirements" type="text" class="form-control" placeholder="Conocimientos previos…" />
     </div>
   </div>`;
@@ -1313,16 +1594,16 @@ function buildModals() {
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content border-0">
         <div class="modal-header modal-header-grad border-0">
-          <h5 class="modal-title text-white fw-bold"><i class="bi bi-plus-circle me-2"></i>Nueva Tutoría</h5>
+          <h5 class="modal-title text-white fw-bold"><i class="bi bi-plus-circle me-2"></i>${t("modalCreate")}</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
           <form id="createSessionForm">${sessionFields}</form>
         </div>
         <div class="modal-footer border-0">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">${t("cancel")}</button>
           <button type="submit" form="createSessionForm" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>Crear tutoría
+            <i class="bi bi-plus-lg me-1"></i>${t("createSession")}
           </button>
         </div>
       </div>
@@ -1334,16 +1615,16 @@ function buildModals() {
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content border-0">
         <div class="modal-header modal-header-grad border-0">
-          <h5 class="modal-title text-white fw-bold"><i class="bi bi-pencil me-2"></i>Editar Tutoría</h5>
+          <h5 class="modal-title text-white fw-bold"><i class="bi bi-pencil me-2"></i>${t("modalEdit")}</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
           <form id="editSessionForm">${sessionFields}</form>
         </div>
         <div class="modal-footer border-0">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">${t("cancel")}</button>
           <button type="submit" form="editSessionForm" class="btn btn-primary">
-            <i class="bi bi-save me-1"></i>Guardar cambios
+            <i class="bi bi-save me-1"></i>${t("saveChanges")}
           </button>
         </div>
       </div>
@@ -1356,20 +1637,20 @@ function buildModals() {
       <div class="modal-content border-0">
         <div class="modal-header modal-header-danger border-0">
           <h5 class="modal-title text-white fw-bold">
-            <i class="bi bi-exclamation-triangle me-2"></i>Confirmar eliminación
+            <i class="bi bi-exclamation-triangle me-2"></i>${t("modalDelete")}
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4 text-center">
           <i class="bi bi-trash3 text-danger d-block mb-3" style="font-size:3rem"></i>
-          <p class="mb-1">¿Eliminar la tutoría de</p>
+          <p class="mb-1">${t("deleteQuestion")}</p>
           <strong class="text-danger fs-5" id="deleteLabel"></strong>?
-          <p class="text-muted small mt-2">Esta acción no se puede deshacer.</p>
+          <p class="text-muted small mt-2">${t("deleteWarning")}</p>
         </div>
         <div class="modal-footer border-0">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">${t("cancel")}</button>
           <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
-            <i class="bi bi-trash me-1"></i>Eliminar
+            <i class="bi bi-trash me-1"></i>${t("delete")}
           </button>
         </div>
       </div>
